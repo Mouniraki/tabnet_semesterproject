@@ -1,0 +1,56 @@
+Evaluating ieeecis
+../out/ieeecis_pt_greedy_None already exists. Skipping attack...
+0.0
+Rob Acc:  0.0
+../out/ieeecis_pt_greedy_None already exists. Skipping attack...
+0.354
+Finished evaluating ieeecis
+-----
+Evaluating tabnet_noind
+../out/tabnet_noind_pt_greedy_None already exists. Skipping attack...
+0.0
+Rob Acc:  0.0
+../out/tabnet_noind_pt_greedy_None already exists. Skipping attack...
+0.3443333333333333
+Finished evaluating tabnet_noind
+-----
+Evaluating tabnet_norelax
+../out/tabnet_norelax_pt_greedy_None already exists. Skipping attack...
+0.0
+Rob Acc:  0.0
+../out/tabnet_norelax_pt_greedy_None already exists. Skipping attack...
+0.354
+Finished evaluating tabnet_norelax
+-----
+Evaluating tabnet_highrelax
+../out/tabnet_highrelax_pt_greedy_None already exists. Skipping attack...
+0.0
+Rob Acc:  0.0
+../out/tabnet_highrelax_pt_greedy_None already exists. Skipping attack...
+0.354
+Finished evaluating tabnet_highrelax
+-----
+Evaluating tabnet_low_na_nd
+../out/tabnet_low_na_nd_pt_greedy_None already exists. Skipping attack...
+0.0
+Rob Acc:  0.0
+../out/tabnet_low_na_nd_pt_greedy_None already exists. Skipping attack...
+0.317
+Finished evaluating tabnet_low_na_nd
+-----
+Evaluating tabnet_lowsteps
+../out/tabnet_lowsteps_pt_greedy_None already exists. Skipping attack...
+0.0
+Rob Acc:  0.0
+../out/tabnet_lowsteps_pt_greedy_None already exists. Skipping attack...
+0.0
+Finished evaluating tabnet_lowsteps
+-----
+Evaluating tabnet_lowbatch
+../out/tabnet_lowbatch_pt_greedy_None already exists. Skipping attack...
+0.0
+Rob Acc:  0.0
+../out/tabnet_lowbatch_pt_greedy_None already exists. Skipping attack...
+0.352
+Finished evaluating tabnet_lowbatch
+-----
