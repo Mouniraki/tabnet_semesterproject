@@ -144,119 +144,17 @@ class Perc(nn.Module):
 
 
 class TabNet_ieeecis(TabNet):
-    def __init__(self, inp_dim):
+    def __init__(self, inp_dim, n_d=16, n_a=16, n_shared=2, n_ind=2, n_steps=4, relax=1.2, vbs=512):
         super().__init__(
             inp_dim=inp_dim,
             final_out_dim=1,
-            n_d=16,
-            n_a=16,
-            n_shared=2,
-            n_ind=2,
-            n_steps=4,
-            relax=1.2,
-            vbs=512,
-        )
-
-
-
-class TabNet_ieeecis_noshared(TabNet):
-    def __init__(self, inp_dim):
-        super().__init__(
-            inp_dim=inp_dim,
-            final_out_dim=1,
-            n_d=16,
-            n_a=16,
-            n_shared=0,
-            n_ind=4,
-            n_steps=4,
-            relax=1.2,
-            vbs=512,
-        )
-
-class TabNet_ieeecis_noind(TabNet):
-    def __init__(self, inp_dim):
-        super().__init__(
-            inp_dim=inp_dim,
-            final_out_dim=1,
-            n_d=16,
-            n_a=16,
-            n_shared=4,
-            n_ind=0,
-            n_steps=4,
-            relax=1.2,
-            vbs=512,
-        )
-
-class TabNet_ieeecis_norelax(TabNet):
-    def __init__(self, inp_dim):
-        super().__init__(
-            inp_dim=inp_dim,
-            final_out_dim=1,
-            n_d=16,
-            n_a=16,
-            n_shared=2,
-            n_ind=2,
-            n_steps=4,
-            relax=0,
-            vbs=512,
-        )
-
-class TabNet_ieeecis_highrelax(TabNet):
-    def __init__(self, inp_dim):
-        super().__init__(
-            inp_dim=inp_dim,
-            final_out_dim=1,
-            n_d=16,
-            n_a=16,
-            n_shared=2,
-            n_ind=2,
-            n_steps=4,
-            relax=10,
-            vbs=512,
-        )
-
-
-class TabNet_ieeecis_low_na_nd(TabNet):
-    def __init__(self, inp_dim):
-        super().__init__(
-            inp_dim=inp_dim,
-            final_out_dim=1,
-            n_d=1,
-            n_a=1,
-            n_shared=2,
-            n_ind=2,
-            n_steps=4,
-            relax=1.2,
-            vbs=512,
-        )
-
-
-class TabNet_ieeecis_lowsteps(TabNet):
-    def __init__(self, inp_dim):
-        super().__init__(
-            inp_dim=inp_dim,
-            final_out_dim=1,
-            n_d=16,
-            n_a=16,
-            n_shared=2,
-            n_ind=2,
-            n_steps=1,
-            relax=1.2,
-            vbs=512,
-        )
-
-class TabNet_ieeecis_lowbatch(TabNet):
-    def __init__(self, inp_dim):
-        super().__init__(
-            inp_dim=inp_dim,
-            final_out_dim=1,
-            n_d=16,
-            n_a=16,
-            n_shared=2,
-            n_ind=2,
-            n_steps=4,
-            relax=1.2,
-            vbs=64,
+            n_d=n_d,
+            n_a=n_a,
+            n_shared=n_shared,
+            n_ind=n_ind,
+            n_steps=n_steps,
+            relax=relax,
+            vbs=vbs,
         )
 
 

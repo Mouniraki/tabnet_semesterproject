@@ -58,6 +58,16 @@ def get_args():
     parser.add_argument("--attack", default="greedy", type=str)
     parser.add_argument("--cost_bound", default=None, type=float)
     parser.add_argument("--model", default="ieeecis", type=str)
+
+    # TabNet specific parameters
+    parser.add_argument("--n_d", default=16, type=int)
+    parser.add_argument("--n_a", default=16, type=int)
+    parser.add_argument("--n_shared", default=2, type=int)
+    parser.add_argument("--n_ind", default=2, type=int)
+    parser.add_argument("--n_steps", default=4, type=int)
+    parser.add_argument("--relax", default=1.2, type=float)
+    parser.add_argument("--vbs", default=512, type=int)
+
     parser.add_argument("--model_path", default="../models/default.pt", type=str)
     parser.add_argument(
         "--utility_type",
@@ -130,7 +140,17 @@ def main():
     if os.path.isfile(experiment_path) and not args.force:
         print(f"{experiment_path} already exists. Skipping attack...")
     else:
-        net = model_dict[args.model](inp_dim=shape_dict[args.dataset]).to(device)
+        if args.model == "tabnet_ieeecis":
+            net = model_dict[args.model](inp_dim=shape_dict[args.dataset], 
+                n_d=args.n_d, 
+                n_a=args.n_a, 
+                n_shared=args.n_shared, 
+                n_ind=args.n_ind, 
+                n_steps=args.n_steps, 
+                relax=args.relax, 
+                vbs=args.vbs).to(device)
+        else:
+            net = model_dict[args.model](inp_dim=shape_dict[args.dataset]).to(device)
         net.load_state_dict(torch.load(args.model_path))
         net.eval()
         clf = TorchWrapper(net, device)

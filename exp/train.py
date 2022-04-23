@@ -16,33 +16,20 @@ from exp import loaders
 from exp.tabnet import TabNet
 from exp.settings import get_dataset
 from exp.utils import *
-from exp.models import FCNN, TabNet_ieeecis, TabNet_ieeecis_noshared, TabNet_ieeecis_noind, TabNet_ieeecis_norelax, TabNet_ieeecis_highrelax, TabNet_ieeecis_low_na_nd, TabNet_ieeecis_lowsteps, TabNet_ieeecis_lowbatch, TabNet_homecredit, Perc, FCNN_small
+from exp.models import FCNN, TabNet_ieeecis, TabNet_homecredit, Perc, FCNN_small
 
 import argparse
 
 default_model_dict = {
     "home_credit": TabNet_homecredit,
     "ieeecis": TabNet_ieeecis,
-    "tabnet_noshared": TabNet_ieeecis_noshared,
-    "tabnet_noind": TabNet_ieeecis_noind,
-    "tabnet_norelax": TabNet_ieeecis_norelax,
-    "tabnet_highrelax": TabNet_ieeecis_highrelax,
-    "tabnet_low_na_nd": TabNet_ieeecis_low_na_nd,
-    "tabnet_lowsteps": TabNet_ieeecis_lowsteps,
-    "tabnet_lowbatch": TabNet_ieeecis_lowbatch,
+    "tabnet_ieeecis": TabNet_ieeecis,
     "twitter_bot": TabNet,
     "syn": TabNet,
 }
 model_dict = {
     "tabnet_homecredit": TabNet_homecredit,
     "tabnet_ieeecis": TabNet_ieeecis,
-    "tabnet_noshared": TabNet_ieeecis_noshared,
-    "tabnet_noind": TabNet_ieeecis_noind,
-    "tabnet_norelax": TabNet_ieeecis_norelax,
-    "tabnet_highrelax": TabNet_ieeecis_highrelax,
-    "tabnet_low_na_nd": TabNet_ieeecis_low_na_nd,
-    "tabnet_lowsteps": TabNet_ieeecis_lowsteps,
-    "tabnet_lowbatch": TabNet_ieeecis_lowbatch,
     "tabnet": TabNet,
     "perc": Perc,
     "fcnn": FCNN,
@@ -79,6 +66,17 @@ def get_args():
     parser.add_argument("--lamb", default=1.00, type=float)
     parser.add_argument("--distance", default="l1", type=str)
     parser.add_argument("--model", default="default", type=str)
+
+    # TabNet specific parameters
+    parser.add_argument("--n_d", default=16, type=int)
+    parser.add_argument("--n_a", default=16, type=int)
+    parser.add_argument("--n_shared", default=2, type=int)
+    parser.add_argument("--n_ind", default=2, type=int)
+    parser.add_argument("--n_steps", default=4, type=int)
+    parser.add_argument("--relax", default=1.2, type=float)
+    parser.add_argument("--vbs", default=512, type=int)
+
+
     parser.add_argument("--model_path", default="../models/default.pt", type=str)
     parser.add_argument("--checkpoint", default="", type=str)
     parser.add_argument(
@@ -268,7 +266,14 @@ def train_model(
     eps_sched=False,
     _lambda=0,
     utility_type="constant",
-    model_path=None
+    model_path=None,
+    n_d=16,
+    n_a=16,
+    n_shared=2,
+    n_ind=2,
+    n_steps=4,
+    relax=1.2,
+    vbs=512
 ):
     start_eps = eps
     criterion = nn.BCEWithLogitsLoss()
@@ -280,7 +285,9 @@ def train_model(
     else:
         pgd_alpha = 0
 
-    if model_name != "default":
+    if model_name == "tabnet_ieeecis":
+        net = model_dict[model_name](inp_dim=inp_dim, n_d=n_d, n_a=n_a, n_shared=n_shared, n_ind=n_ind, n_steps=n_steps, relax=relax, vbs=vbs).to(device)
+    elif model_name != "default":
         net = model_dict[model_name](inp_dim=inp_dim).to(device)
     else:
         net = default_model_dict[dataset](inp_dim=inp_dim).to(device)
@@ -417,7 +424,14 @@ def main():
         _lambda=args.lamb,
         eps_sched=args.eps_sched,
         utility_type=args.utility_type,
-        model_path=args.model_path
+        model_path=args.model_path,
+        n_d=args.n_d,
+        n_a=args.n_a,
+        n_shared=args.n_shared,
+        n_ind=args.n_ind,
+        n_steps=args.n_steps,
+        relax=args.relax,
+        vbs=args.vbs
     )
     torch.save(model.state_dict(), args.model_path)
 
