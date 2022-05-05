@@ -144,7 +144,7 @@ class Perc(nn.Module):
 
 
 class TabNet_ieeecis(TabNet):
-    def __init__(self, inp_dim, n_d=16, n_a=16, n_shared=2, n_ind=2, n_steps=4, relax=1.2, vbs=512):
+    def __init__(self, inp_dim, n_d, n_a, n_shared, n_ind, n_steps, relax, vbs):
         super().__init__(
             inp_dim=inp_dim,
             final_out_dim=1,
