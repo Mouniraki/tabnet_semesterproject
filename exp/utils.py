@@ -454,7 +454,7 @@ def dataset_eval(model, loader, score="f1", device=torch.device("cpu")):
 
     model.train()
 
-    return acc, 0
+    return acc, 0 # TODO: COmpute actual loss
 
 
 def dataset_eval_rob(

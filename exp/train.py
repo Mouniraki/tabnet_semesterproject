@@ -300,6 +300,7 @@ def train_model(
     best_epoch = 0
     best_validation_acc = 0
     delay = 10 # TODO: FIGURE OUT IDEAL DELAY VALUE
+    delay_starting_threshold = 15 # TO CHANGE IF WE FIND A BETTER VALUE
     best_model = None
 
     for epoch in range(epochs):
@@ -371,7 +372,10 @@ def train_model(
         )
 
         # If we get a new best accuracy => save the model somewhere
-        if validation_acc > best_validation_acc:
+        if (epoch+1) < delay_starting_threshold:
+            best_model = net
+
+        elif validation_acc > best_validation_acc and (epoch+1) < delay_starting_threshold:
             best_epoch = epoch + 1
             best_validation_acc = validation_acc
             best_model = net
