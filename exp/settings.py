@@ -142,7 +142,7 @@ def _get_working_datasets(data_test, target_col):
 
 
 def get_dataset(dataset, data_dir, mode, seed=0, same_cost=False, cat_map=False):
-    if dataset in ["ieeecis", "tabnet_noshared", "tabnet_noind", "tabnet_norelax", "tabnet_highrelax", "tabnet_low_na_nd", "tabnet_lowsteps", "tabnet_lowbatch"]:
+    if dataset == "ieeecis":
         data = loaders.IEEECISDataset(
             data_dir,
             mode=mode,
@@ -207,7 +207,7 @@ class EvalSettings:
 
 
 def setup_dataset_eval(dataset, data_dir, seed=0):
-    if dataset in ["ieeecis", "tabnet_noshared", "tabnet_noind", "tabnet_norelax", "tabnet_highrelax", "tabnet_low_na_nd", "tabnet_lowsteps", "tabnet_lowbatch"]:
+    if dataset == "ieeecis":
         target_col = "isFraud"
         gain_col = "TransactionAmt"
         target_class = 0

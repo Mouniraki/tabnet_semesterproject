@@ -255,6 +255,7 @@ def train_model(
     epochs,
     train_loader,
     test_loader,
+    validation_loader,
     dataset,
     model_name,
     device=torch.device("cpu"),
@@ -294,6 +295,13 @@ def train_model(
 
     optm = Adam(net.parameters(), lr=0.001, weight_decay=5e-4)
     #optm = torch.optim.SGD(net.parameters(), lr=0.1, weight_decay=5e-4)
+
+    # Variables for validation step
+    best_epoch = 0
+    best_validation_acc = 0
+    delay = 10 # TODO: FIGURE OUT IDEAL DELAY VALUE
+    delay_starting_threshold = 15 # TO CHANGE IF WE FIND A BETTER VALUE
+    best_model = None
 
     for epoch in range(epochs):
         epoch_loss = 0
@@ -347,6 +355,7 @@ def train_model(
 
         epoch_loss = epoch_loss / len(train_loader.dataset)
         test_acc, test_loss = dataset_eval(net, test_loader, score="acc", device=device)
+        validation_acc, validation_loss = dataset_eval(net, validation_loader, score="acc", device=device)
         test_rob_acc, _ = dataset_eval_rob(
             net,
             test_loader,
@@ -361,6 +370,15 @@ def train_model(
             utility_max=utility_max,
             eps_max=train_loader.dataset.max_eps
         )
+
+        # If we get a new best accuracy => save the model somewhere
+        if (epoch+1) < delay_starting_threshold:
+            best_model = net
+
+        elif validation_acc > best_validation_acc and (epoch+1) < delay_starting_threshold:
+            best_epoch = epoch + 1
+            best_validation_acc = validation_acc
+            best_model = net
 
         print(
             "Epoch {} Train Accuracy : {} (clean {}), Test Accuracy : {}, Test Robust Accuracy: {}".format(
@@ -377,11 +395,15 @@ def train_model(
                 (epoch + 1), ut_avg / len(train_loader.dataset)
             )
         )
-        torch.save(net.state_dict(), model_path)
-
-
-    return net
-
+        print(
+            "Epoch {} Best Epoch {} Validation Acc {} Best Validation Acc {} Validation Loss {} Delay {} Current delay {}".format(
+                (epoch + 1), best_epoch, validation_acc, best_validation_acc, validation_loss, delay, ((epoch + 1) - best_epoch)
+            )
+        )
+        if((epoch + 1) - best_epoch >= delay):
+            return best_model
+            # torch.save(best_model.state_dict(), model_path)
+    return best_model
 
 def main():
     args = get_args()
@@ -403,16 +425,23 @@ def main():
     data_test = get_dataset(
         args.dataset, args.data_dir, mode="test", same_cost=args.same_cost, cat_map=args.keep_one_hot
     )
+    data_validation = get_dataset(
+        args.dataset, args.data_dir, mode="validation", same_cost=args.same_cost, cat_map=args.keep_one_hot
+    )
     train_loader = DataLoader(
         dataset=data_train, batch_size=args.batch_size, shuffle=True, num_workers=8
     )
     test_loader = DataLoader(
         dataset=data_test, batch_size=args.batch_size, shuffle=False, num_workers=8
     )
+    validation_loader = DataLoader(
+        dataset=data_validation, batch_size=args.batch_size, shuffle=False, num_workers=8
+    )
     model = train_model(
         args.epochs,
         train_loader,
         test_loader,
+        validation_loader,
         args.dataset,
         args.model,
         device=device,

@@ -154,17 +154,23 @@ class IEEECISDataset(Dataset):
         w_vector = get_w_vec(X, weights, one_hot=True, sep="_").unsqueeze(0)
         self.w = w_vector
 
+        # Split 80/20 for train/test
         if balanced:
             X_resampled, self.y_resampled = RandomUnderSampler(
                 random_state=seed
             ).fit_resample(X, y)
             X_train, X_test, y_train, y_test = train_test_split(
-                X_resampled, self.y_resampled, test_size=3000, random_state=seed
+                X_resampled, self.y_resampled, test_size=0.2, random_state=seed
             )
         else:
             X_train, X_test, y_train, y_test = train_test_split(
-                X, y, test_size=3000, random_state=seed
+                X, y, test_size=0.2, random_state=seed
             )
+
+        # Split once more for the validation set (x * 0.8 = 0.2 => x = 0.2/0.8 = 0.25)
+        X_train, X_val, y_train, y_val = train_test_split(
+            X_train, y_train, test_size=0.25, random_state=seed
+        )
 
         del X
         del y
@@ -183,6 +189,13 @@ class IEEECISDataset(Dataset):
             self.inp = X_test.to_numpy(dtype=np.float32)
             self.oup = y_test.to_numpy(dtype=np.float32)
             self.cost_orig = cost_orig.iloc[X_test.index].to_numpy(dtype=np.float32)
+
+        elif mode == "validation":
+            self.X_val = X_val
+            self.y_val = y_val
+            self.inp = X_val.to_numpy(dtype=np.float32)
+            self.oup = y_val.to_numpy(dtype=np.float32)
+            self.cost_orig = cost_orig.iloc[X_val.index].to_numpy(dtype=np.float32)
 
         else:
             raise ValueError
