@@ -299,6 +299,7 @@ def train_model(
     # Variables for validation step
     best_epoch = 0
     best_validation_acc = 0
+    best_validation_loss = 0
     delay = 10 # TODO: FIGURE OUT IDEAL DELAY VALUE
     delay_starting_threshold = 15 # TODO: TO CHANGE IF WE FIND A BETTER VALUE
     best_model = None
@@ -354,8 +355,8 @@ def train_model(
             epoch_loss += loss
 
         epoch_loss = epoch_loss / len(train_loader.dataset)
-        test_acc, test_loss = dataset_eval(net, test_loader, score="acc", device=device)
-        validation_acc, validation_loss = dataset_eval(net, validation_loader, score="acc", device=device)
+        test_acc, test_loss = dataset_eval(net, test_loader, criterion, score="acc", device=device)
+        validation_acc, validation_loss = dataset_eval(net, validation_loader, criterion, score="acc", device=device)
         test_rob_acc, _ = dataset_eval_rob(
             net,
             test_loader,
@@ -372,19 +373,20 @@ def train_model(
         )
 
         # If we get a new best accuracy => save the model somewhere
-        if validation_acc > best_validation_acc or (epoch+1) < delay_starting_threshold:
+        if validation_loss < best_validation_loss or (epoch+1) < delay_starting_threshold:
             best_epoch = epoch + 1
             best_validation_acc = validation_acc
+            best_validation_loss = validation_loss
             best_model = net
 
         print(
-            "Epoch {} Train Accuracy : {} (clean {}), Test Accuracy : {}, Test Robust Accuracy: {}".format(
-                epoch + 1, acc, clean_acc, test_acc, test_rob_acc
+            "Epoch {} Train Accuracy : {} (clean {}), Test Accuracy : {}, Test Robust Accuracy: {}, Validation Accuracy: {}".format(
+                (epoch + 1), acc, clean_acc, test_acc, test_rob_acc, validation_acc
             )
         )
         print(
-            "Epoch {} Train Loss : {}, Test Loss : {}".format(
-                (epoch + 1), epoch_loss, test_loss
+            "Epoch {} Train Loss : {}, Test Loss : {} Validation Loss : {}".format(
+                (epoch + 1), epoch_loss, test_loss, validation_loss
             )
         )
         print(
@@ -393,8 +395,8 @@ def train_model(
             )
         )
         print(
-            "Epoch {} Best Epoch {} Validation Acc {} Best Validation Acc {} Validation Loss {} Delay {} Current delay {}".format(
-                (epoch + 1), best_epoch, validation_acc, best_validation_acc, validation_loss, delay, ((epoch + 1) - best_epoch)
+            "Delay: {} Current delay: {} Best Epoch: {} Best Validation Acc: {} Best Validation Loss {}".format(
+                delay, ((epoch + 1) - best_epoch), best_epoch, best_validation_acc, best_validation_loss
             )
         )
         if((epoch + 1) - best_epoch >= delay):
