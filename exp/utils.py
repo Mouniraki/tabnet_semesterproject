@@ -423,38 +423,41 @@ def attack_pgd_training(
     return delta.detach()
 
 
-def dataset_eval(model, loader, score="f1", device=torch.device("cpu")):
+def dataset_eval(model, loader, criterion, score="f1", device=torch.device("cpu")):
     model.eval()
     epoch_loss = 0
     correct = 0
     tp, tn, fp, fn = 0, 0, 0, 0
-    for bidx, (x, y, c) in enumerate(loader):
-        x = x.to(device)
-        y = y.to(device)
-        predictions = model(x)
-        for idx, i in enumerate(predictions):
-            i = torch.round(torch.sigmoid(i))
-            if i == y[idx]:
-                correct += 1
-                if y[idx] == 1:
-                    tp += 1
+    with torch.no_grad():
+        for bidx, (x, y, c) in enumerate(loader):
+            x = x.to(device)
+            y = y.to(device)
+            predictions = model(x)
+            loss = criterion(predictions, y)
+            epoch_loss += loss.item()
+            for idx, i in enumerate(predictions):
+                i = torch.round(torch.sigmoid(i))
+                if i == y[idx]:
+                    correct += 1
+                    if y[idx] == 1:
+                        tp += 1
+                    else:
+                        tn += 1
                 else:
-                    tn += 1
-            else:
-                if y[idx] == 1:
-                    fp += 1
-                else:
-                    fn += 1
+                    if y[idx] == 1:
+                        fp += 1
+                    else:
+                        fn += 1
 
-        if score == "acc":
-            acc = correct / len(loader.dataset)
+            if score == "acc":
+                acc = correct / len(loader.dataset)
 
-        if score == "f1":
-            acc = tp / (tp + (fp + fn) / 2)
-
+            if score == "f1":
+                acc = tp / (tp + (fp + fn) / 2)
+    epoch_loss /= len(loader.dataset)
     model.train()
 
-    return acc, 0 # TODO: COmpute actual loss
+    return acc, epoch_loss
 
 
 def dataset_eval_rob(
