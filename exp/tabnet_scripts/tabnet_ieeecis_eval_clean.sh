@@ -1,9 +1,9 @@
-UTILITY_TYPES="maximum satisficing cost-restrictred average-attack-cost success_rate"
+UTILITY_TYPES="cost-restrictred average-attack-cost success_rate"
 PATH_TO_MODELS="../models/tabnet/"
 mkdir $PATH_TO_MODELS
 
 echo "Model format: [n_steps|n_shared|n_ind]"
-echo "maximum,satisficing,cost-restricted,average-attack-cost,success_rate"
+echo "accuracy,cost-restricted,average-attack-cost,success_rate"
 for n_steps in `seq 2 8`
 do
     for n_shared in `seq 1 3`
@@ -14,7 +14,12 @@ do
             echo "[${n_steps}|${n_shared}|${n_ind}]"
             for ut in $UTILITY_TYPES
             do
-                python3 eval.py --dataset ieeecis --model tabnet_ieeecis --model_path $PATH_TO_MODELS/ieeecis_${n_steps}_${n_shared}_${n_ind}_16_16_0_0.pt --n_steps $n_steps --n_shared $n_shared --n_ind $n_ind --utility_type $ut
+                if [ "$ut" = 'cost-restrictred' ]
+                then
+                    python3 eval.py --dataset ieeecis --model tabnet_ieeecis --model_path $PATH_TO_MODELS/ieeecis_${n_steps}_${n_shared}_${n_ind}_16_16_0_0.pt --n_steps $n_steps --n_shared $n_shared --n_ind $n_ind --utility_type $ut --force
+                else
+                    python3 eval.py --dataset ieeecis --model tabnet_ieeecis --model_path $PATH_TO_MODELS/ieeecis_${n_steps}_${n_shared}_${n_ind}_16_16_0_0.pt --n_steps $n_steps --n_shared $n_shared --n_ind $n_ind --utility_type $ut
+                fi
             done
             echo "----------------------------------"
         done

@@ -4,7 +4,7 @@ import re
 oup = open("ieeecis_clean_eval_out.csv", mode='w')
 
 # Write the first row of the file
-oup.write("model[n_steps|n_shared|n_ind],maximum,satisficing,cost-restricted,average-attack-cost,success_rate,rob_accuracy\n")
+oup.write("model[n_steps|n_shared|n_ind],accuracy,cost-restricted,average-attack-cost,success_rate,rob_accuracy\n")
 
 # Filters everything that isn't a number/a decimal
 regex = re.compile('[^0-9.|]')
