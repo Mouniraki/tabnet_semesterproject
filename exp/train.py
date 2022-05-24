@@ -76,6 +76,8 @@ def get_args():
     parser.add_argument("--relax", default=1.2, type=float)
     parser.add_argument("--vbs", default=512, type=int)
 
+    # Early-stopping delay parameter
+    parser.add_argument("--delay", default=0, type=int)
 
     parser.add_argument("--model_path", default="../models/default.pt", type=str)
     parser.add_argument("--checkpoint", default="", type=str)
@@ -253,6 +255,7 @@ def train(
 
 def train_model(
     epochs,
+    delay,
     train_loader,
     test_loader,
     validation_loader,
@@ -300,7 +303,6 @@ def train_model(
     best_epoch = 0
     best_validation_acc = 0
     best_validation_loss = 0
-    delay = 10 # TODO: FIGURE OUT IDEAL DELAY VALUE
     delay_starting_threshold = 15 # TODO: TO CHANGE IF WE FIND A BETTER VALUE
     best_model = None
 
@@ -373,7 +375,7 @@ def train_model(
         )
 
         # If we get a new best accuracy => save the model somewhere
-        if validation_loss < best_validation_loss or (epoch+1) < delay_starting_threshold:
+        if delay == 0 or (epoch+1) < delay_starting_threshold or validation_loss < best_validation_loss:
             best_epoch = epoch + 1
             best_validation_acc = validation_acc
             best_validation_loss = validation_loss
@@ -399,7 +401,7 @@ def train_model(
                 delay, ((epoch + 1) - best_epoch), best_epoch, best_validation_acc, best_validation_loss
             )
         )
-        if((epoch + 1) - best_epoch >= delay):
+        if(delay > 0 and (epoch + 1) - best_epoch >= delay):
             return best_model
             # torch.save(best_model.state_dict(), model_path)
     return best_model
@@ -438,6 +440,7 @@ def main():
     )
     model = train_model(
         args.epochs,
+        args.delay,
         train_loader,
         test_loader,
         validation_loader,
