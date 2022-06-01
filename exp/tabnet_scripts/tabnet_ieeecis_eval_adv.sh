@@ -19,9 +19,9 @@ do
             do
                 if [ "$ut" = 'cost-restrictred' ]
                 then
-                    python3 eval.py --dataset ieeecis --model tabnet_ieeecis --model_path $PATH_TO_MODELS/ieeecis_${n_steps}_${n_shared}_${n_ind}_16_16_${EPS_VAL}_${ATTACK_ITERS}.pt --n_steps $n_steps --n_shared $n_shared --n_ind $n_ind --utility_type $ut --force
+                    python3 eval.py --dataset ieeecis --model tabnet_ieeecis --model_path $PATH_TO_MODELS/ieeecis_${n_steps}_${n_shared}_${n_ind}_16_16_${EPS_VAL}_${ATTACK_ITERS}.pt --n_steps $n_steps --n_shared $n_shared --n_ind $n_ind --utility_type $ut --cost-bound 1.0 --force
                 else
-                    python3 eval.py --dataset ieeecis --model tabnet_ieeecis --model_path $PATH_TO_MODELS/ieeecis_${n_steps}_${n_shared}_${n_ind}_16_16_${EPS_VAL}_${ATTACK_ITERS}.pt --n_steps $n_steps --n_shared $n_shared --n_ind $n_ind --utility_type $ut
+                    python3 eval.py --dataset ieeecis --model tabnet_ieeecis --model_path $PATH_TO_MODELS/ieeecis_${n_steps}_${n_shared}_${n_ind}_16_16_${EPS_VAL}_${ATTACK_ITERS}.pt --n_steps $n_steps --n_shared $n_shared --n_ind $n_ind --utility_type $ut --cost-bound 1.0
                 fi
             done
             echo "----------------------------------"

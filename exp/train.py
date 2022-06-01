@@ -76,8 +76,9 @@ def get_args():
     parser.add_argument("--relax", default=1.2, type=float)
     parser.add_argument("--vbs", default=512, type=int)
 
-    # Early-stopping delay parameter
+    # Early-stopping delay parameters
     parser.add_argument("--delay", default=0, type=int)
+    parser.add_argument("--delay_threshold", default=15, type=int)
 
     parser.add_argument("--model_path", default="../models/default.pt", type=str)
     parser.add_argument("--checkpoint", default="", type=str)
@@ -256,6 +257,7 @@ def train(
 def train_model(
     epochs,
     delay,
+    delay_starting_threshold,
     train_loader,
     test_loader,
     validation_loader,
@@ -303,7 +305,6 @@ def train_model(
     best_epoch = 0
     best_validation_acc = 0
     best_validation_loss = 0
-    delay_starting_threshold = 15 # TODO: TO CHANGE IF WE FIND A BETTER VALUE
     best_model = None
 
     for epoch in range(epochs):
@@ -397,8 +398,8 @@ def train_model(
             )
         )
         print(
-            "Delay: {} Current delay: {} Best Epoch: {} Best Validation Acc: {} Best Validation Loss {}".format(
-                delay, ((epoch + 1) - best_epoch), best_epoch, best_validation_acc, best_validation_loss
+            "Delay: {} Delay Threshold: {} Current delay: {} Best Epoch: {} Best Validation Acc: {} Best Validation Loss {}".format(
+                delay, delay_starting_threshold, ((epoch + 1) - best_epoch), best_epoch, best_validation_acc, best_validation_loss
             )
         )
         if(delay > 0 and (epoch + 1) - best_epoch >= delay):
@@ -441,6 +442,7 @@ def main():
     model = train_model(
         args.epochs,
         args.delay,
+        args.delay_threshold,
         train_loader,
         test_loader,
         validation_loader,
