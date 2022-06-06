@@ -82,7 +82,7 @@ def main():
     )
 
     if args.plot_type == 'heat':
-        mod_df = df[["accuracy","cost-restricted","average-attack-cost","success_rate","rob_accuracy"]]
+        mod_df = df[args.plot_for]
         s = sns.heatmap(mod_df, yticklabels=df['model_params'])
 
         base_title = f"Heatmap of eval criterions for some TabNet config., with eps={df['eps_val'].iloc[0]}, n_attack_iters={df['n_attack_iters'].iloc[0]}"
@@ -103,7 +103,7 @@ def main():
         # Plotting the graph (bar-kind for the moment)
         proj_df.plot(x = 'model_params', y = args.plot_for, kind = "bar")
 
-        base_title = f"Bar plot of {args.plot_for} for some TabNet config., with eps={df['eps_val'].iloc[0]}, n_attack_iters={df['n_attack_iters'].iloc[0]}"
+        base_title = f"Bar plot of eval criterions for some TabNet config., with eps={df['eps_val'].iloc[0]}, n_attack_iters={df['n_attack_iters'].iloc[0]}"
         text_arr = np.array([n_steps_str, n_shared_str, n_ind_str])
         text_arr = np.array2string(text_arr[text_arr != ''], separator=', ').replace('[', '').replace(']', '')
         if len(text_arr) > 0:
