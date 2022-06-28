@@ -16,7 +16,7 @@ def main():
     oup = open(args.output_file, mode='w')
 
     # Write the first row of the file
-    oup.write("model[n_steps|n_shared|n_ind|eps_val|n_attack_iters],accuracy,cost-restricted,average-attack-cost,success_rate,rob_accuracy\n")
+    oup.write("n_steps,n_shared,n_ind,eps_val,n_attack_iters,accuracy,average-attack-cost,success_rate,rob_accuracy\n")
 
     # Filters everything that isn't a number/a decimal
     regex = re.compile('[^0-9.|]')
@@ -34,7 +34,7 @@ def main():
             elif "---" in line:
                 oup.write('\n')
             else:
-                oup.write(regex.sub('', line)+',')
+                oup.write(regex.sub('', line).replace('|', ',')+',')
 
         inp.close()
     oup.close()

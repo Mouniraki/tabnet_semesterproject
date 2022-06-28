@@ -1,0 +1,30 @@
+Model format: [n_steps|n_shared|n_ind|eps_val|n_attack_iters]
+accuracy,average-attack-cost,success_rate
+[2|1|1|1.0|20]
+Acc:  0.6885050625372245
+0.13658923962676195
+../out/ieeecis_2_1_1_16_16_1_0_20_pt_greedy_2.0 already exists. Skipping attack...
+0.3073558648111332
+Rob Acc:  0.3073558648111332
+----------------------------------
+[2|1|2|1.0|20]
+Acc:  0.6918800873535835
+0.19039110581695454
+../out/ieeecis_2_1_2_16_16_1_0_20_pt_greedy_2.0 already exists. Skipping attack...
+0.19483101391650098
+Rob Acc:  0.19483101391650098
+----------------------------------
+[2|2|1|1.0|20]
+Acc:  0.6942624578121898
+0.1872146118721461
+../out/ieeecis_2_2_1_16_16_1_0_20_pt_greedy_2.0 already exists. Skipping attack...
+0.20278330019880716
+Rob Acc:  0.20278330019880716
+----------------------------------
+[2|2|2|1.0|20]
+Acc:  0.695850704784594
+0.2060750446694461
+../out/ieeecis_2_2_2_16_16_1_0_20_pt_greedy_2.0 already exists. Skipping attack...
+0.1753479125248509
+Rob Acc:  0.1753479125248509
+----------------------------------

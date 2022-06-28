@@ -2,8 +2,8 @@ UTILITY_TYPES="average-attack-cost success_rate"
 PATH_TO_MODELS="../models/tabnet/"
 mkdir $PATH_TO_MODELS
 
-EPS_VAL=0.0
-ATTACK_ITERS=0
+EPS_VAL=0.1
+ATTACK_ITERS=20
 
 echo "Model format: [n_steps|n_shared|n_ind|eps_val|n_attack_iters]"
 echo "accuracy,average-attack-cost,success_rate"

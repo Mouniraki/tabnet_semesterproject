@@ -2,8 +2,9 @@ UTILITY_TYPES="average-attack-cost success_rate"
 PATH_TO_MODELS="../models/tabnet/"
 mkdir $PATH_TO_MODELS
 
-EPS_VAL=0.0
-ATTACK_ITERS=0
+EPS_VAL=20
+COST_BOUND=20.1
+ATTACK_ITERS=20
 
 echo "Model format: [n_steps|n_shared|n_ind|eps_val|n_attack_iters]"
 echo "accuracy,average-attack-cost,success_rate"
@@ -19,9 +20,9 @@ do
             do
                 if [ "$ut" = 'average-attack-cost' ]
                 then
-                    python3 eval.py --dataset ieeecis --model tabnet_ieeecis --model_path $PATH_TO_MODELS/ieeecis_${n_steps}_${n_shared}_${n_ind}_16_16_${EPS_VAL}_${ATTACK_ITERS}.pt --n_steps $n_steps --n_shared $n_shared --n_ind $n_ind --utility_type $ut --force
+                    python3 eval.py --dataset ieeecis --model tabnet_ieeecis --model_path $PATH_TO_MODELS/ieeecis_${n_steps}_${n_shared}_${n_ind}_16_16_${EPS_VAL}_${ATTACK_ITERS}.pt --n_steps $n_steps --n_shared $n_shared --n_ind $n_ind --utility_type $ut --cost_bound ${COST_BOUND} --force
                 else
-                    python3 eval.py --dataset ieeecis --model tabnet_ieeecis --model_path $PATH_TO_MODELS/ieeecis_${n_steps}_${n_shared}_${n_ind}_16_16_${EPS_VAL}_${ATTACK_ITERS}.pt --n_steps $n_steps --n_shared $n_shared --n_ind $n_ind --utility_type $ut
+                    python3 eval.py --dataset ieeecis --model tabnet_ieeecis --model_path $PATH_TO_MODELS/ieeecis_${n_steps}_${n_shared}_${n_ind}_16_16_${EPS_VAL}_${ATTACK_ITERS}.pt --n_steps $n_steps --n_shared $n_shared --n_ind $n_ind --utility_type $ut --cost_bound ${COST_BOUND}
                 fi
             done
             echo "----------------------------------"
